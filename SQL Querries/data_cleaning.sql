@@ -36,12 +36,12 @@ WHERE row_num >1;
 
 -- Null values
 
--- Since most of the null values are in the columns of completed_50th_percentiles and completed_90th_percentiles which we are not planning to use at this point. We will leave the null values in their places.
+-- Since we are not planning to use the columns of completed_50th_percentile and completed_90th_percentile for our analysis at this time, We will keep the null values in them as such.
 
 -- Finding and Replacing values <5 with 2.5
--- ( 2.5 is selected as it is the expected value of <5 values to reduce bias and preserve the mean and variance of the columns)
+-- ( 2.5 is selected as it is the expected value of <5 values and will help preserve the mean and variance of the columns)
 
---Looking at the columns with the changed values and comparing with the original columns
+--Looking at the columns while replacing the values of <5 with 2.5 and comparing them with the original columns
 SELECT waiting, completed,
        REPLACE(waiting, '<5', '2.5') AS updated_waiting,
        REPLACE(completed,'<5', '2.5') AS updated_completed
@@ -136,15 +136,7 @@ SELECT waiting,
        completed
     FROM healthcare_data.bc_healthcare.surgical_wait_time;
 
-ALTER TABLE healthcare_data.bc_healthcare.surgical_wait_time
-    ALTER COLUMN waiting TYPE double precision USING (waiting::double precision);
-
-SELECT SUM(CAST(waiting AS double precision)) AS total_waiting
-FROM healthcare_data.bc_healthcare.surgical_wait_time
-GROUP BY health_authority;
-
--- Converting data types of waiting, completed, fiscal_year_start and fiscal_year_end columns
-
+-- Converting data types of waiting and completed columns from string to numeric types
 --Converting the waiting column from string to double precision;
 
 ALTER TABLE healthcare_data.bc_healthcare.surgical_wait_time
